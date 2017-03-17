@@ -1,0 +1,23 @@
+{
+    "name": "kayzore/smart-php",
+    "type": "library",
+    "keywords": ["framework"],
+    "homepage": "https://github.com/kayzore/smart-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jerome Lelievre",
+            "email": "jerome.lelievre2@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "twig/twig": "~1.0",
+        "symfony/yaml": "^3.2"
+    },
+    "autoload": {
+        "psr-0": {
+            "KAY": "src/"
+        }
+    }
+}

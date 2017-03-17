@@ -1,0 +1,9 @@
+composer.lock
+.htaccess
+vendor/
+.idea/
+app/
+web/
+src/CoreBundle/
+src/UserBundle/
+src/DefaultBundle/
