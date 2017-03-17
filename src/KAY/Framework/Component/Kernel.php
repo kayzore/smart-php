@@ -19,7 +19,7 @@ abstract class Kernel
      * @var array $routes
      */
     private $routes;
-    const VERSION = '0.0.0';
+    const VERSION = '0.7.0';
     private static $DEV_MODE = false;
     private static $DOC_ROOT = '';
 
