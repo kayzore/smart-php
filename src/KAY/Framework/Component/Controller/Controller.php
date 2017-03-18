@@ -52,7 +52,7 @@ class Controller extends Container
     protected function render($path, array $vars = array())
     {
         $array = explode('::', $path);
-        $twig =  new TwigRender($path, $array, $vars);
+        $twig =  new TwigRender($path, $array, $this->router->getRoutes(), $vars);
         $path = str_replace(':', '/', $array[1]);
         return $twig->renderView($path, $vars);
     }
@@ -98,7 +98,6 @@ class Controller extends Container
             return '/' . $this->parameters['project_sub_folder'] . $matched_route;
         }
     }
-
     /**
      * @param array $roles_user
      * @return bool
@@ -116,7 +115,6 @@ class Controller extends Container
 
         return false;
     }
-
     /**
      * Check si la requête HTTP est une requête ajax
      * @return bool
