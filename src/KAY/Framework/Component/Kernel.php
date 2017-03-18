@@ -1,6 +1,7 @@
 <?php
 namespace KAY\Framework\Component;
 
+use KAY\Framework\Bundle\ExceptionBundle\Controller\DevExceptionController;
 use KAY\Framework\Bundle\RouterBundle\Route;
 use KAY\Framework\Bundle\RouterBundle\Router;
 use Symfony\Component\Yaml\Exception\ParseException;
@@ -42,25 +43,53 @@ abstract class Kernel
     }
     private function startRouter()
     {
-        $result = false;
         $route = $this->router->start();
-        if (!class_exists($route['controller'])) {
-            $route = '[ERROR] CLASS NOT EXIST';
-        }
-        if (is_array($route)) {
-            $parameters = Yaml::parse(file_get_contents('../app/Config/parameters.yml'));
-            $config = Yaml::parse(file_get_contents('../app/Config/config.yml'));
-            self::$DOC_ROOT = $parameters['parameters']['project_sub_folder'];
-            $controller = new $route['controller'](
-                $parameters['parameters'],
-                $this->getRouter(), $config['session']
+        $parameters = Yaml::parse(file_get_contents('../app/Config/parameters.yml'));
+        $config = Yaml::parse(file_get_contents('../app/Config/config.yml'));
+
+        if (!array_key_exists('error', $route) && !array_key_exists('controller', $route)) {
+            $route = array(
+                'error' => array(
+                    'type' => 404,
+                    'message' => 'Class ' . $route['controller'] . ' not found'
+                )
             );
-            $result = call_user_func_array([$controller, $route['action']], $route['params']);
-        } else {
-            var_dump($route);
         }
-        if ($result) {
-            echo $result;
+        if (array_key_exists('error', $route)) {
+            $this->startException(
+                $parameters['parameters'],
+                $config['session'],
+                $route['error']
+            );
+        } else {
+            echo $this->startController(
+                $parameters['parameters'],
+                $config['session'],
+                $route
+            );
+        }
+    }
+    private function startController($parameters, $config, $route)
+    {
+        self::$DOC_ROOT = $parameters['project_sub_folder'];
+        $controller = new $route['controller'](
+            $parameters,
+            $this->getRouter(), $config
+        );
+        return call_user_func_array([$controller, $route['action']], $route['params']);
+    }
+    private function startException($parameters, $config, $error)
+    {
+        if (self::$DEV_MODE === true) {
+            // DEV Exception
+            new DevExceptionController(
+                $parameters,
+                $this->getRouter(),
+                $config,
+                $error
+            );
+        } else {
+            // PROD Exception
         }
     }
     public static function getDevMode()

@@ -46,12 +46,26 @@ class Router
                     'params'        => $match_route[2]
                 );
             } else {
-                // ERROR Access via this request method not authorized
-                return 'ERROR Access via this request method not authorized';
+                // ERROR 500 Access via this request method not authorized
+                return array(
+                    'error' => array(
+                        'type'      => 500,
+                        'title'     => 'Internal error',
+                        'message'   => 'Access to the route ' . $match_route[1]->getName() . ' not authorized with the '
+                            . $_SERVER['REQUEST_METHOD'] . ' method',
+                        'route'     => $match_route[1]
+                    )
+                );
             }
         } else {
             // ERROR 404 NOT FOUND
-            return 'ERROR 404 NOT FOUND';
+            return array(
+                'error' => array(
+                    'type'      => 404,
+                    'title'     => 'Ooops 404 not found',
+                    'message'   => '404 NOT FOUND'
+                )
+            );
         }
     }
 

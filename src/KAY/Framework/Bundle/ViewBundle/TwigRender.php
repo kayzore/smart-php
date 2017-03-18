@@ -18,7 +18,16 @@ class TwigRender
     {
         $bundle = $array[0];
         $loader1 = new Twig_Loader_Filesystem('../app/Ressources/Views/');
-        $loader2 = new Twig_Loader_Filesystem('../src/' . $bundle . '/Ressources/Views/');
+        if ($bundle === 'ExceptionBundle') {
+            $path_vendor_exception = '../vendor/kayzore/smart-php/src/KAY/Framework/Bundle/' . $bundle . '/Ressources/Views/';
+            if (file_exists($path_vendor_exception)) {
+                $loader2 = new Twig_Loader_Filesystem($path_vendor_exception);
+            } else {
+                $loader2 = new Twig_Loader_Filesystem('../src/KAY/Framework/Bundle/' . $bundle . '/Ressources/Views/');
+            }
+        } else {
+            $loader2 = new Twig_Loader_Filesystem('../src/' . $bundle . '/Ressources/Views/');
+        }
 
         $loader = new Twig_Loader_Chain(array($loader1, $loader2));
         $this->twig = new Twig_Environment($loader, array(
@@ -26,7 +35,6 @@ class TwigRender
             'debug' => Kernel::getDevMode()
         ));
         $this->twig->addExtension(new Twig_Extension_Debug());
-
         $this->twig->addExtension(new CoreExtensions());
         if (file_exists('../app/Twig/MyExtensions.php')) {
             $this->twig->addExtension(new \Twig\MyExtensions());
