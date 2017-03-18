@@ -55,6 +55,16 @@ abstract class Kernel
                 )
             );
         }
+        if (!array_key_exists('error', $route) && array_key_exists('controller', $route)) {
+            if (!method_exists($route['controller'], $route['action'])) {
+                $route = array(
+                    'error' => array(
+                        'type' => 404,
+                        'message' => 'Method ' . $route['action'] . ' not found in controller : ' . $route['controller']
+                    )
+                );
+            }
+        }
         if (array_key_exists('error', $route)) {
             $this->startException(
                 $parameters['parameters'],
