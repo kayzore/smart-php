@@ -64,7 +64,6 @@ class Controller extends Container
     {
         return $formType->buildForm(new FormBuilder());
     }
-
     /**
      * @param string $route_name Route name
      * @param array $params Route param
@@ -99,11 +98,24 @@ class Controller extends Container
             return '/' . $this->parameters['project_sub_folder'] . $matched_route;
         }
     }
+
     /**
-     * TODO: Recherche si l'utilisateur à le role $role
-     * @param array $role
+     * @param array $roles_user
+     * @return bool
      */
-    protected function isGranted($role){}
+    protected function isGranted(array $roles_user)
+    {
+        if (!is_null($this->user->getRoles())) {
+            foreach ($roles_user as $role) {
+                if (in_array($role, $this->user->getRoles())) {
+                    return true;
+                    break;
+                }
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Check si la requête HTTP est une requête ajax
