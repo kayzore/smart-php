@@ -5,15 +5,12 @@ use KAY\Framework\Bundle\FormBundle\FormBuilder;
 use KAY\Framework\Bundle\FormBundle\FormTypeInterface;
 use KAY\Framework\Bundle\RouterBundle\Router;
 use KAY\Framework\Bundle\ViewBundle\TwigRender;
+use KAY\Framework\Component\Container;
 use KAY\Framework\Component\Session\Session;
 use KAY\Framework\Component\Session\User;
 
-class Controller
+class Controller extends Container
 {
-    /**
-     * @var array
-     */
-    private $parameters;
     /**
      * @var Session Session
      */
@@ -29,7 +26,6 @@ class Controller
 
     public function __construct(array $parameters, Router $router, $session_config)
     {
-        //var_dump($bundle_path);
         $this->parameters = $parameters;
         $this->session = new Session($this->parameters);
         $this->router = $router;
