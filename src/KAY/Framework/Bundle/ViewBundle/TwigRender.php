@@ -14,7 +14,7 @@ class TwigRender
      */
     private $twig;
 
-    public function __construct($path, $array, $routes, array $vars = array())
+    public function __construct($path, $array, $routes, $user, array $vars = array())
     {
         $bundle = $array[0];
         $loader1 = new Twig_Loader_Filesystem('../app/Ressources/Views/');
@@ -35,7 +35,7 @@ class TwigRender
             'debug' => Kernel::getDevMode()
         ));
         $this->twig->addExtension(new Twig_Extension_Debug());
-        $this->twig->addExtension(new CoreExtensions($routes));
+        $this->twig->addExtension(new CoreExtensions($routes, $user));
         if (file_exists('../app/Twig/MyExtensions.php')) {
             $this->twig->addExtension(new \Twig\MyExtensions());
         }

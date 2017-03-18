@@ -7,7 +7,6 @@ use KAY\Framework\Bundle\RouterBundle\Route;
 use KAY\Framework\Bundle\RouterBundle\Router;
 use KAY\Framework\Bundle\ViewBundle\TwigRender;
 use KAY\Framework\Component\Container;
-use KAY\Framework\Component\Kernel;
 use KAY\Framework\Component\Session\Session;
 use KAY\Framework\Component\Session\User;
 
@@ -52,7 +51,7 @@ class Controller extends Container
     protected function render($path, array $vars = array())
     {
         $array = explode('::', $path);
-        $twig =  new TwigRender($path, $array, $this->router->getRoutes(), $vars);
+        $twig =  new TwigRender($path, $array, $this->router->getRoutes(), $this->user, $vars);
         $path = str_replace(':', '/', $array[1]);
         return $twig->renderView($path, $vars);
     }
