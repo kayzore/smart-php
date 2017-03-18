@@ -3,13 +3,12 @@ Small php framework, fast, simple and powerful
 
 ### TODO
 - Database:
-     Système de connexion avec la possibilité de se connecter a plusieurs bdd de type différent
     - Query builder
-        - insert()
-        - update()
-        - delete()
+        - dynamique:
+            - insert dynamique
+            - update dynamique
+            - delete dynamique
         - find:
-            - byId($id)
             - by(array $where_list)
 - Controller:
     - redirect()
