@@ -54,8 +54,11 @@ abstract class Entity
         return $stmt->fetch();
     }
 
-    public function query($query_name)
+    public function query($query_name, array $params = array())
     {
+        if (!empty($params)) {
+            return $this->entityQuery->$query_name($params);
+        }
         return $this->entityQuery->$query_name();
     }
 }

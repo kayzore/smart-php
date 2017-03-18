@@ -28,19 +28,26 @@ class EntityManager extends Entity
     }
 
     /**
+     * Validation check
      * @param EntityValidation $entityValidation
      * @param $post
+     * @param $errors
+     * @return bool
      */
-    public function insert(EntityValidation $entityValidation, $post, &$errors)
+    public function emInsert(EntityValidation $entityValidation, $post, &$errors)
     {
-        if ($entityValidation->validateField($post, $errors)) {
-
-        }
+        return $entityValidation->validateField($post, $errors);
     }
 
     private function extractEntity($path)
     {
         $entity_infos = explode(':', $path);
         return '\\' . $entity_infos[0] . '\Entity\\' . $entity_infos[1];
+    }
+
+    private function extractEntityName($entity)
+    {
+        $entity_infos = explode('\\', get_class($entity));
+        return $entity_infos[count($entity_infos) - 1];
     }
 }
