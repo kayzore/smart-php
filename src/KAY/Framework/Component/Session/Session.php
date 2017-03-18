@@ -12,8 +12,9 @@ class Session
     public function __construct(array $parameters)
     {
         session_start();
-        if (isset($_SESSION[strtolower($parameters['project_name'])])) {
-            $session = $_SESSION[strtolower($parameters['project_name'])];
+        $session_name = str_replace(' ', '-', strtolower($parameters['project_name']));
+        if (isset($_SESSION[$session_name])) {
+            $session = $_SESSION[$session_name];
         } else {
             $session = array();
         }

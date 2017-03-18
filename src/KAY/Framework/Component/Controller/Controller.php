@@ -3,6 +3,7 @@ namespace KAY\Framework\Component\Controller;
 
 use KAY\Framework\Bundle\FormBundle\FormBuilder;
 use KAY\Framework\Bundle\FormBundle\FormTypeInterface;
+use KAY\Framework\Bundle\RouterBundle\Route;
 use KAY\Framework\Bundle\RouterBundle\Router;
 use KAY\Framework\Bundle\ViewBundle\TwigRender;
 use KAY\Framework\Component\Container;
@@ -50,7 +51,7 @@ class Controller extends Container
     protected function render($path, array $vars = array())
     {
         $array = explode('::', $path);
-        $twig =  new TwigRender($path, $array, $vars);
+        $twig =  new TwigRender($path, $array, $this->router->getRoutes(), $this->user, $vars);
         $path = str_replace(':', '/', $array[1]);
         return $twig->renderView($path, $vars);
     }
@@ -62,29 +63,57 @@ class Controller extends Container
     {
         return $formType->buildForm(new FormBuilder());
     }
-
     /**
-     * TODO: Créer la redirection
      * @param string $route_name Route name
+     * @param array $params Route param
      */
-    protected function redirect($route_name){}
-    /**
-     * TODO: Génere une route et la retourne
-     * @param string $route_name
-     * @param array $vars
-     */
-    protected function generateUrl($route_name, array $vars)
+    protected function redirect($route_name, array $params = array())
     {
-        // Parcours la liste des routes
-        // Si le nom de la route correspond a $_GET['url']
-        // Alors on remplace les parametres Router::replaceParams('', array());
+        foreach ($this->router->getRoutes() as $route) {
+            if ($route->getName() == $route_name) {
+                $matched_route = Route::replaceParams($route->getPath(), $params);
+                break;
+            }
+        }
+        if (isset($matched_route)) {
+            header('location: /' . $this->parameters['project_sub_folder'] . $matched_route);
+            die;
+        }
     }
     /**
-     * TODO: Recherche si l'utilisateur à le role $role
-     * @param array $role
+     * @param string $route_name
+     * @param array $params
+     * @return string
      */
-    protected function isGranted($role){}
+    protected function generateUrl($route_name, array $params = array())
+    {
+        foreach ($this->router->getRoutes() as $route) {
+            if ($route->getName() == $route_name) {
+                $matched_route = Route::replaceParams($route->getPath(), $params);
+                break;
+            }
+        }
+        if (isset($matched_route)) {
+            return '/' . $this->parameters['project_sub_folder'] . $matched_route;
+        }
+    }
+    /**
+     * @param array $roles_user
+     * @return bool
+     */
+    protected function isGranted(array $roles_user)
+    {
+        if (!is_null($this->user->getRoles())) {
+            foreach ($roles_user as $role) {
+                if (in_array($role, $this->user->getRoles())) {
+                    return true;
+                    break;
+                }
+            }
+        }
 
+        return false;
+    }
     /**
      * Check si la requête HTTP est une requête ajax
      * @return bool
