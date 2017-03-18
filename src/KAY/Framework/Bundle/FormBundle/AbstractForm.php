@@ -11,6 +11,10 @@ abstract class AbstractForm
 
     private $form = array();
 
+    private $isValidate = false;
+
+    private $errors = [];
+
     public function __construct()
     {
         $this->configureOptions($this);
@@ -18,6 +22,9 @@ abstract class AbstractForm
 
     public function createView()
     {
+        if (!empty($this->errors)) {
+            $this->form['errors'] = $this->errors;
+        }
         return $this->getForm();
     }
 
@@ -51,6 +58,19 @@ abstract class AbstractForm
     public function setForm(array $form)
     {
         $this->form = $form;
+    }
+
+    public function isValidate()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->isValidate = true;
+        }
+        return $this->isValidate;
+    }
+
+    public function setErrors($errors)
+    {
+        $this->errors = $errors;
     }
 
     abstract function configureOptions(AbstractForm $abstractForm);

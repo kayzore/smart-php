@@ -27,6 +27,17 @@ class EntityManager extends Entity
         return $this;
     }
 
+    /**
+     * @param EntityValidation $entityValidation
+     * @param $post
+     */
+    public function insert(EntityValidation $entityValidation, $post, &$errors)
+    {
+        if ($entityValidation->validateField($post, $errors)) {
+
+        }
+    }
+
     private function extractEntity($path)
     {
         $entity_infos = explode(':', $path);

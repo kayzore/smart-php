@@ -23,9 +23,16 @@ class Controller extends Container
      * @var User
      */
     private $user;
+    /**
+     * @var array
+     */
+    private $post;
 
     public function __construct(array $parameters, Router $router, $session_config)
     {
+        if (isset($_POST)) {
+            $this->post = $_POST;
+        }
         $this->parameters = $parameters;
         $this->session = new Session($this->parameters);
         $this->router = $router;
@@ -98,5 +105,9 @@ class Controller extends Container
     protected function getSession()
     {
         return $this->session;
+    }
+    protected function getPost()
+    {
+        return $this->post;
     }
 }
