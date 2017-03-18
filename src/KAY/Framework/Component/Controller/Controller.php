@@ -3,9 +3,11 @@ namespace KAY\Framework\Component\Controller;
 
 use KAY\Framework\Bundle\FormBundle\FormBuilder;
 use KAY\Framework\Bundle\FormBundle\FormTypeInterface;
+use KAY\Framework\Bundle\RouterBundle\Route;
 use KAY\Framework\Bundle\RouterBundle\Router;
 use KAY\Framework\Bundle\ViewBundle\TwigRender;
 use KAY\Framework\Component\Container;
+use KAY\Framework\Component\Kernel;
 use KAY\Framework\Component\Session\Session;
 use KAY\Framework\Component\Session\User;
 
@@ -64,20 +66,38 @@ class Controller extends Container
     }
 
     /**
-     * TODO: Créer la redirection
      * @param string $route_name Route name
+     * @param array $params Route param
      */
-    protected function redirect($route_name){}
-    /**
-     * TODO: Génere une route et la retourne
-     * @param string $route_name
-     * @param array $vars
-     */
-    protected function generateUrl($route_name, array $vars)
+    protected function redirect($route_name, array $params = array())
     {
-        // Parcours la liste des routes
-        // Si le nom de la route correspond a $_GET['url']
-        // Alors on remplace les parametres Router::replaceParams('', array());
+        foreach ($this->router->getRoutes() as $route) {
+            if ($route->getName() == $route_name) {
+                $matched_route = Route::replaceParams($route->getPath(), $params);
+                break;
+            }
+        }
+        if (isset($matched_route)) {
+            header('location: /' . $this->parameters['project_sub_folder'] . $matched_route);
+            die;
+        }
+    }
+    /**
+     * @param string $route_name
+     * @param array $params
+     * @return string
+     */
+    protected function generateUrl($route_name, array $params = array())
+    {
+        foreach ($this->router->getRoutes() as $route) {
+            if ($route->getName() == $route_name) {
+                $matched_route = Route::replaceParams($route->getPath(), $params);
+                break;
+            }
+        }
+        if (isset($matched_route)) {
+            return '/' . $this->parameters['project_sub_folder'] . $matched_route;
+        }
     }
     /**
      * TODO: Recherche si l'utilisateur à le role $role

@@ -108,4 +108,9 @@ class Router
         }
         return $request_method;
     }
+
+    public function getRoutes()
+    {
+        return $this->routes;
+    }
 }
